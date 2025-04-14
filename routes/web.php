@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
@@ -21,7 +22,8 @@ Route::middleware([SetLocale::class])->group(function () {
 
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.store');
-    Route::post('/login/send-recovery-email', [LoginController::class, 'send_recovery_email'])->name('login.send_recovery_email');
+    Route::post('/login/send-recovery-email', [LoginController::class, 'sendRecoveryEmail'])->name('login.send-recovery-email');
+    Route::post('/login/reset-password', [LoginController::class, 'resetPassword'])->name('login.reset-password');
 
     Route::get('/register', function () {
         return view('auth.register');
@@ -35,7 +37,7 @@ Route::middleware([SetLocale::class])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->name('profile');
 
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'de', 'fr', 'es', 'hr'])) {
@@ -47,9 +49,11 @@ Route::middleware([SetLocale::class])->group(function () {
         return redirect()->back()->with('locale_changed', true);
     })->name('lang.switch');
 
-    Route::get('/password_recovery', function () {
+    Route::get('/password-recovery', function () {
         return view('auth.password-recovery');
-    })->name('password_recovery');
+    })->name('password-recovery');
+
+    Route::get('/reset-password/{email}/{token}', [LoginController::class, 'showResetPasswordForm'])->name('reset-password');
 
     Route::fallback(function () {
         return ('Page not found');

@@ -25,12 +25,12 @@
     </form>
 
     <div>
-        <a href="{{ route('password_recovery') }}">{{ __('messages.login.forgot_password') }}</a>
+        <a href="{{ route('password-recovery') }}">{{ __('messages.login.forgot_password') }}</a>
     </div>
 
     {{-- Display validation errors --}}
     @if ($errors->any())
-        <div>
+        <div  class="error-messages">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -38,6 +38,13 @@
             </ul>
         </div>
     @endif
+
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+
 </body>
 </html>
 

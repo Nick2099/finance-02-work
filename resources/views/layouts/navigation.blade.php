@@ -5,12 +5,7 @@
             {{-- Links for authenticated users --}}
             <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
             <li><a href="{{ route('profile') }}">Profile</a></li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit">Logout</button>
-                </form>
-            </li>
+            <li><a href="{{ route('logout') }}">Logout</a></li>
         @else
             {{-- Links for guests --}}
             <li><a href="{{ route('login') }}">Login</a></li>

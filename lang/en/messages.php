@@ -17,6 +17,8 @@ return [
         'email' => 'Email address',
         'send_recovery_link' => 'Send recovery link',
         'email_not_found' => 'The provided email address does not match our records.',
+        'email_recovery_text' => 'Please enter your email address to receive a password recovery link.',
+        'email_text' => 'Click the following link to reset your password: ',
     ],
     'email_sent' => [
         'title' => 'Email Sent',
@@ -29,6 +31,12 @@ return [
         'password' => 'Password',
         'confirm_password' => 'Confirm password',
         'register' => 'Register',
+    ],
+    'reset_password' => [
+        'title' => 'Reset Password',
+        'password' => 'New password',
+        'confirm_password' => 'Confirm new password',
+        'reset_password' => 'Reset password',
     ],
     'profile' => [
         'title' => 'Profile',

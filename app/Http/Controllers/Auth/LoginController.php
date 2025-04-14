@@ -7,6 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class LoginController extends Controller
 {
@@ -66,7 +70,7 @@ class LoginController extends Controller
         return redirect()->route('home');
     }
 
-    public function send_recovery_email(Request $request)
+    public function sendRecoveryEmail(Request $request)
     {
         // Validate the email address
         $request->validate([
@@ -74,19 +78,91 @@ class LoginController extends Controller
         ]);
 
         // Check if the user exists
-        if (User::where('email', $request->email)->exists()) {
+        $user = User::where('email', $request->email)->first();
 
-            Mail::raw('This is a test email from Mailtrap!', function ($message) use ($request) {
-                $message->to($request->email)
-                        ->subject('Test Email');
+        if ($user) {
+            // Generate a token
+            $token = Str::random(60);
+
+            // Save the token and email in the password_reset_tokens table
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $user->email],
+                ['token' => $token, 'created_at' => now()]
+            );
+
+            // Generate the reset password link
+            $resetLink = route('reset-password', ['email' => $user->email, 'token' => $token]);
+
+            // Send the recovery email
+            Mail::raw(__('messages.password_recovery.email_text') . $resetLink, function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Password Recovery');
             });
+
             return view('auth.email-sent');
         }
 
-        // If login fails, redirect back with an error message
+        // If user does not exist, redirect back with an error message
         return back()->withErrors([
             'email' => __('messages.password_recovery.email_not_found'),
         ])->onlyInput('email');
-        return back()->with('status', 'Recovery link sent to your email address.');
+    }
+
+    public function showResetPasswordForm($email, $token)
+    {
+        // Validate the email and token
+        $passwordReset = DB::table('password_reset_tokens')->where([
+            'email' => $email,
+            'token' => $token,
+        ])->first();
+
+        if (!$passwordReset) {
+            return redirect()->route('password-recovery')->withErrors(['token' => 'Invalid or expired token.']);
+        }
+
+        return view('auth.reset-password', ['email' => $email, 'token' => $token]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(10) // Minimum 10 characters
+                    ->mixedCase() // At least one uppercase and one lowercase letter
+                    ->letters()   // At least one letter
+                    ->numbers()   // At least one number
+                    ->symbols(),  // At least one symbol
+            ],
+        ]);
+
+        // Check if the token is valid (you may need to implement token validation logic)
+        $passwordReset = DB::table('password_reset_tokens')->where([
+            'email' => $request->email,
+            'token' => $request->token,
+        ])->first();
+
+        if (!$passwordReset) {
+            return back()->withErrors(['token' => 'Invalid or expired token.']);
+        }
+
+        // Update the user's password
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            // Delete the token after successful password reset
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+            return redirect()->route('login')->with('status', 'Password reset successfully.');
+        }
+
+        return back()->withErrors(['email' => 'No user found with this email address.']);
     }
 }

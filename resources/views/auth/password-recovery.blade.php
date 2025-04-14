@@ -11,7 +11,7 @@
         @include('layouts.navigation')
     </header>
     <h1>{{ __('messages.password_recovery.title') }}</h1>
-    <form method="POST" action="{{ route('login.send_recovery_email') }}">
+    <form method="POST" action="{{ route('login.send-recovery-email') }}">
         @csrf
         <div>
             <label for="email">{{ __('messages.password_recovery.email') }}:</label>
