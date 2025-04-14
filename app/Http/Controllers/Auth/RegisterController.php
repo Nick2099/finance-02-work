@@ -46,7 +46,7 @@ class RegisterController extends Controller
             'level' => 1, // Default value
             'admin_level' => 1, // Default value
             'timezone' => $request->timezone ?? 'UTC', // Save the selected timezone
-            'language' => $request->language,
+            'language' => $request->language ?? 'en',
         ]);
 
         // Log the user in

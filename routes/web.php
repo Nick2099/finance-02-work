@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
@@ -31,9 +30,9 @@ Route::middleware([SetLocale::class])->group(function () {
 
     Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
-    Route::get('/dashboard', function () {
-        return 'Dashboard Page';
-    })->middleware('auth')->name('dashboard');
+    Route::get('/entry', function () {
+        return 'Entry Page';
+    })->middleware('auth')->name('entry');
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->name('profile');
 

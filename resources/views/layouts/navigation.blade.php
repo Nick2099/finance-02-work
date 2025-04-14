@@ -3,7 +3,7 @@
         <li><a href="{{ route('home') }}">Home</a></li>
         @auth
             {{-- Links for authenticated users --}}
-            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ route('entry') }}">Entry</a></li>
             <li><a href="{{ route('profile') }}">Profile</a></li>
             <li><a href="{{ route('logout') }}">Logout</a></li>
         @else

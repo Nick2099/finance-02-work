@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
@@ -40,8 +41,9 @@ class LoginController extends Controller
 
             // Set the session locale to the user's preferred language
             $user = Auth::user();
-            $language = $user->details->language ?? config('app.locale');
-            $request->session()->put('locale', $language);
+            $locale = $user->details->language ?? config('app.locale');
+            Session::put('locale', $locale);
+            $request->session()->put('locale', $locale);
 
             // Redirect to the intended page or dashboard
             return redirect()->route('home');

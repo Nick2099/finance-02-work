@@ -16,6 +16,12 @@
 - Redirects to the dashboard after successful registration.
 - User Nikica Dadic has password Test1234!!
 
+## Updated Routes
+- All routes now use hyphens (`-`) instead of underscores (`_`) for better readability and SEO compliance.
+
+## Logout Link
+- The logout button has been replaced with a link that triggers the logout form submission using JavaScript.
+
 ## Debugging Tips
 - Use `dd()` to debug variables.
 - Check validation errors with `$errors->all()`.
