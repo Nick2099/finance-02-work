@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
@@ -58,3 +59,5 @@ Route::middleware([SetLocale::class])->group(function () {
         return ('Page not found');
     })->name('404');
 });
+
+Auth::routes(['verify' => true]);

@@ -49,10 +49,10 @@ class RegisterController extends Controller
             'language' => $request->language ?? 'en',
         ]);
 
-        // Log the user in
-        Auth::login($user);
+        // Send email verification notification
+        $user->sendEmailVerificationNotification();
 
-        // Redirect to the home page
-        return redirect()->route('home');
+        // Redirect to a page informing the user to verify their email
+        return redirect()->route('verification.notice');
     }
 }

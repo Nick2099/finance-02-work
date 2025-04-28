@@ -45,6 +45,11 @@ class LoginController extends Controller
             Session::put('locale', $locale);
             $request->session()->put('locale', $locale);
 
+            // Ensure $user is an instance of the User model
+            if ($user instanceof \App\Models\User && !$user->hasVerifiedEmail()) {
+                return back()->withErrors(['email' => 'Please verify your email before logging in.']);
+            }
+
             // Redirect to the intended page or dashboard
             return redirect()->route('home');
         }
